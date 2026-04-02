@@ -1,4 +1,4 @@
-from Environment import GridEnvironment
+from environment import GridEnvironment
 import pygame
 
 class Display:
@@ -8,7 +8,7 @@ class Display:
 
 		pygame.init()
 		self.SCREEN = pygame.display.set_mode((self._windowSize[0], self._windowSize[1]))
-		self.SCREEN.fill((0,0,0))
+		self.SCREEN.fill((255,255,255))
 
 		self._cellSize = (
 			int(self._windowSize[0] / self._environment.size[0]),

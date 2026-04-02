@@ -1,4 +1,4 @@
-from Environment import GridEnvironment, Cell
+from environment import GridEnvironment, Cell
 
 class TaskEnvironment:
 	def __init__(self, environment: GridEnvironment, start: Cell, goal: Cell):

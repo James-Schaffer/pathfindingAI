@@ -10,6 +10,22 @@ class Cell:
 		self._state = CELL_STATES.DEFAULT
 		self._color = (255,0,0)
 
+	@property
+	def location(self):
+		return self._location
+	
+	@property
+	def state(self):
+		return self._state
+	
+	@property
+	def color(self) -> tuple[int, int, int]:
+		return self._color
+	
+	@color.setter
+	def color(self, val: tuple[int, int, int]):
+		self._color = val
+
 	def setState(self, state):
 		match (state):
 			case CELL_STATES.DEFAULT:
@@ -17,12 +33,24 @@ class Cell:
 				self._color = (255,0,0)
 			case CELL_STATES.EMPTY:
 				self._state = state
-				self._color = (0,0,0)
+				self._color = (255,255,255)
 			case CELL_STATES.BLOCKED:
 				self._state = state
-				self._color = (255,255,255)
+				self._color = (0,0,0)
 			case _:
 				raise ValueError(f"Un-reccognised state {state}")
+
+# DIRECTIONS = [
+#     (-1, -1), (0, -1), (1, -1),
+#     (-1,  0), (0,  0), (1,  0),
+#     (-1,  1), (0,  1), (1,  1),
+# ]
+
+DIRECTIONS = [
+			  (0, -1),
+	(-1,  0), (0,  0), (1,  0),
+			  (0,  1),
+]
 
 class GridEnvironment:
 	def __init__(self, size: tuple[int, int]):
@@ -41,6 +69,19 @@ class GridEnvironment:
 			return self._grid[x][y]
 		return self._grid[key]
 	
+	def getAdjacent(self, target: tuple[int, int]) -> set[Cell]:
+		return {
+			self[(tmp:=(target[0]+x,target[1]+y))] for x,y in DIRECTIONS
+				if 0 <= tmp[0] < self._size[0] and 0 <= tmp[1] < self._size[1]
+		}
+	
+	def getAdjacent_empty(self, target: tuple[int, int]) -> set[Cell]:
+		filt = lambda x : 0 <= x[0] < self._size[0] and 0 <= x[1] < self._size[1] and self[x].state == CELL_STATES.EMPTY
+
+		return { self[dx,dy] for dx,dy in
+			filter(filt, [(target[0]+x,target[1]+y) for x,y in DIRECTIONS])
+		}
+
 	def loadMapData(self, data: list[str]) -> None:
 		if (len(data)!=self._size[1]) or (len(data[0])!=self._size[0]):
 			raise ValueError(f"Data not of size {self._size}")

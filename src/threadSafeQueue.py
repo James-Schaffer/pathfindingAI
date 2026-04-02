@@ -19,7 +19,7 @@ class ThreadSafeQueue:
 					self._condition.wait()
 			else:
 				if not self._queue:
-					raise Empty()
+					return None
 			return self._queue.popleft()
 		
 	@property
